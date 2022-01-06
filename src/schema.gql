@@ -1,0 +1,70 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""product data"""
+type ProductDto {
+  """id product"""
+  id: String!
+
+  """product name"""
+  name: String!
+
+  """product normalized Name """
+  normalizedName: String!
+
+  """product price"""
+  price: Float!
+
+  """product quantity"""
+  quantity: Float!
+
+  """product modified by name"""
+  modifiedByName: String!
+
+  """product modified by id"""
+  modifiedById: String!
+
+  """product modified date"""
+  modifiedDate: Float!
+
+  """product created by name"""
+  createdByName: String!
+
+  """product created by id"""
+  createdById: String!
+
+  """product created date"""
+  createdDate: Float!
+}
+
+type Query {
+  GetListProduct: String!
+}
+
+type Mutation {
+  """add product async"""
+  AddProductAsync(params: CreateProductRequestDto!): ProductDto!
+
+  """add product async"""
+  AddUserAsync(params: CreateUserRequestDto!): String!
+
+  """add product async"""
+  register: String!
+}
+
+"""input product data"""
+input CreateProductRequestDto {
+  name: String!
+  normalizedName: String!
+  price: Float!
+  quantity: Float!
+}
+
+"""input user data"""
+input CreateUserRequestDto {
+  name: String!
+  normalizedName: String!
+  email: String!
+  password: String!
+}

@@ -1,38 +1,39 @@
 import { PermissionGuards } from './../common/authorization/guards/permission.guards';
 import { JwtAuthGuard } from './../common/authentication/guards/jwt-auth.guard';
-import { LoginRequest } from './../../core/domain/dtos/user/login-request.dto';
 import { CreateUserRequestDto } from './../../core/domain/dtos/user/create-user-request.dto';
-import { UserDto } from './../../core/domain/dtos/user/user.dto';
 import { Resolver, Query, Args, Mutation, Context } from '@nestjs/graphql';
-import { CreateProductRequestDto } from 'src/core/domain/dtos/product/create-product-request.dto';
-import { ProductDto } from 'src/core/domain/dtos/product/product.dto';
-import { UserReposiroty } from '../repositories/user.repository';
+import { UserRepository } from '../repositories/user.repository';
 import { CommandBus } from '@nestjs/cqrs';
 import { createUserCommands } from 'src/core/application/commands/user/create-user.command';
 import { JwtService } from '@nestjs/jwt';
-import { Req, UseGuards } from '@nestjs/common';
-import { LocalAuthGuard } from '../common/authentication/guards/local-auth.guard';
-import { CurrentUser } from '../common/authentication/decorator/current-user.decorator';
-import { Any } from 'typeorm';
+import {Req, UseGuards } from '@nestjs/common';
 import { Permissions } from '../common/authorization/decorator/permission.decorator';
+import {Claims} from "../common/authentication/claims/claims";
+import {UuidHelper} from "../common/helper";
+import {PermConst} from "../../core/application/common/constants/perm.constants";
+import {Mapper} from "@automapper/core";
+import {InjectMapper} from "@automapper/nestjs";
+import { UserDto } from 'src/core/domain/dtos/user/user.dto';
 
 @Resolver()
 export class UserResolver {
   constructor(
-    private userRepository: UserReposiroty,
+    private userRepository: UserRepository,
     private commandBus: CommandBus,
     private jwtService: JwtService,
+    @InjectMapper() private mapper : Mapper
   ) {}
 
-  @Mutation((returns) => String, { description: 'add product async' })
-  async AddUserAsync(@Args('params') data: CreateUserRequestDto): Promise<any> {
-    const command = new createUserCommands(data);
-    const user = await this.userRepository.create(data);
+  @UseGuards(JwtAuthGuard,PermissionGuards)
+  @Permissions(PermConst.ADMIN)
+  @Mutation((returns) => UserDto, { description: 'add product async' })
+  async AddUserAsync(@Args('params') data: CreateUserRequestDto,@Context() context): Promise<any> {
+    const command =await this.mapper.map(data,createUserCommands,CreateUserRequestDto,{extraArguments: {claim:context?.req?.user}})
 
-    const result = await this.userRepository.createUserAsync(user);
-    const token = await this.jwtService.sign({ id: result.id });
+    const result = await  this.commandBus.execute(command);
 
-    return token;
+    return result;
+
   }
 
   @UseGuards(JwtAuthGuard, PermissionGuards)
@@ -40,5 +41,14 @@ export class UserResolver {
   @Mutation((returns) => String, { description: 'add product async' })
   async register(@Context() context): Promise<String> {
     return 'ressd';
+  }
+  @Query((returns) => String)
+  async createToken() {
+    const claims = new Claims();
+    claims.id = UuidHelper.newUuid();
+    claims.name = "Nguyen Ngoc Phu";
+    claims.roles= [];
+    claims.permission=['ADMIN'];
+    return await  this.jwtService.signAsync(JSON.stringify(claims));
   }
 }

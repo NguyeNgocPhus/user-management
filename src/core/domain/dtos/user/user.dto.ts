@@ -1,6 +1,7 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import {} from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {UserStatus} from "../../common/enum/user.status";
 
 @ObjectType({ description: 'user data' })
 export class UserDto {
@@ -14,7 +15,9 @@ export class UserDto {
   @Field({ description: 'user email' })
   email: string;
   @Field({ description: 'user password' })
-  password: string;
+  phoneNumber: string;
+  @Field({ description: 'user password' })
+  status: UserStatus;
 
   @Field({ description: 'user modified by name' })
   public modifiedByName: string;

@@ -38,8 +38,75 @@ type ProductDto {
   createdDate: Float!
 }
 
+"""user data"""
+type UserDto {
+  """id user"""
+  id: String!
+
+  """user name"""
+  name: String!
+
+  """user normalized Name """
+  normalizedName: String!
+
+  """user email"""
+  email: String!
+
+  """user password"""
+  phoneNumber: String!
+
+  """user password"""
+  status: String!
+
+  """user modified by name"""
+  modifiedByName: String!
+
+  """user modified by id"""
+  modifiedById: String!
+
+  """user modified date"""
+  modifiedDate: Float!
+
+  """user created by name"""
+  createdByName: String!
+
+  """user created by id"""
+  createdById: String!
+
+  """user created date"""
+  createdDate: Float!
+}
+
+type RoleDto {
+  id: String!
+  code: String!
+  name: String!
+  description: String!
+  normalizedName: String!
+  status: String!
+
+  """user modified by name"""
+  modifiedByName: String!
+
+  """user modified by id"""
+  modifiedById: String!
+
+  """user modified date"""
+  modifiedDate: Float!
+
+  """user created by name"""
+  createdByName: String!
+
+  """user created by id"""
+  createdById: String!
+
+  """user created date"""
+  createdDate: Float!
+}
+
 type Query {
   GetListProduct: String!
+  createToken: String!
 }
 
 type Mutation {
@@ -47,10 +114,11 @@ type Mutation {
   AddProductAsync(params: CreateProductRequestDto!): ProductDto!
 
   """add product async"""
-  AddUserAsync(params: CreateUserRequestDto!): String!
+  AddUserAsync(params: CreateUserRequestDto!): UserDto!
 
   """add product async"""
   register: String!
+  createRole(params: CreateRoleRequestDto!): RoleDto!
 }
 
 """input product data"""
@@ -66,5 +134,14 @@ input CreateUserRequestDto {
   name: String!
   normalizedName: String!
   email: String!
-  password: String!
+  phoneNumber: String!
+  roles: [String!]!
+}
+
+"""create role request"""
+input CreateRoleRequestDto {
+  name: String!
+  code: String!
+  normalizedName: String!
+  description: String!
 }

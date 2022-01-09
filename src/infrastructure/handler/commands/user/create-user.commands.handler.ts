@@ -1,13 +1,59 @@
-import { createUserCommands } from 'src/core/application/commands/user/create-user.command';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserReposiroty } from 'src/infrastructure/repositories/user.repository';
+import {createUserCommands} from 'src/core/application/commands/user/create-user.command';
+import {CommandHandler, EventBus, EventPublisher, ICommandHandler, QueryBus} from '@nestjs/cqrs';
+import {UserRepository} from 'src/infrastructure/repositories/user.repository';
+import {GetUserByPhoneNumberOrEmailQuery} from "../../../../core/application/queries/user/get-user-by-phoneNumber-or-Email.query";
+import {DuplicatedItemException} from 'src/core/domain/exceptions/DuplicatedItem.exception';
+import {UserAggregatesRoot} from "../../../../core/domain/aggregates/user.aggregates";
+import {DataTimeHelper, UuidHelper} from "../../../common/helper";
+import {UserStatus} from "../../../../core/domain/common/enum/user.status";
+import {Mapper} from "@automapper/core";
+import {UserDto} from "../../../../core/domain/dtos/user/user.dto";
+import {InjectMapper} from "@automapper/nestjs";
 
 @CommandHandler(createUserCommands)
 export class createUserCommnadHandler
-  implements ICommandHandler<createUserCommands>
-{
-  constructor(private userRepository: UserReposiroty) {}
+    implements ICommandHandler<createUserCommands> {
+  constructor(private userRepository: UserRepository,
+              private queryBus: QueryBus,
+              private eventBus: EventBus,
+              @InjectMapper() private mapper: Mapper) {
+  }
+
   async execute(command: createUserCommands): Promise<any> {
-    return await this.userRepository.createUserAsync(command.data);
+
+    const query = new GetUserByPhoneNumberOrEmailQuery(command.payload.phoneNumber, command.payload.email);
+
+    const existUser = await this.queryBus.execute(query);
+    if (existUser) {
+      throw  new DuplicatedItemException({
+        message: "duplicate item",
+        data: command,
+      })
+    }
+
+    const userAggregates = new UserAggregatesRoot(UuidHelper.newUuid());
+    const now = DataTimeHelper.getNowUnix();
+    const transactionId = UuidHelper.newUuid();
+    userAggregates.initialize(
+        userAggregates.id,
+        command.payload.name,
+        command.payload.normalizedName,
+        command.payload.email,
+        command.payload.phoneNumber,
+        UserStatus.Active,
+        command.claim.name,
+        command.claim.id,
+        now,
+        command.claim.id,
+        command.claim.name,
+        now,
+        transactionId,
+        command.payload.roles
+    )
+    userAggregates.domainEvents.forEach(event => {
+      this.eventBus.publish(event);
+    })
+    return this.mapper.map(userAggregates, UserDto, UserAggregatesRoot);
+
   }
 }

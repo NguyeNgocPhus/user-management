@@ -1,20 +1,17 @@
 import { ProductRealModel } from './product.entity';
 import { UserStatus } from './../common/enum/user.status';
-import {} from '@nestjs/common';
-import {} from '@nestjs/graphql';
 import {
   Column,
   Entity,
   ManyToMany,
   OneToMany,
-  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseEnity } from './base.entity';
+import {RoleReadModel} from "./role.entity";
 
 @Entity()
-export class UserReadModel {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export class UserReadModel extends  BaseEnity{
+
 
   @Column()
   name: string;
@@ -25,12 +22,17 @@ export class UserReadModel {
   @Column()
   email: string;
 
-  @Column()
-  password: string;
+  @Column({
+    nullable:true
+  })
+  phoneNumber:string;
 
   @Column({ type: 'enum', enum: UserStatus, default: UserStatus.Active })
   status: UserStatus;
 
   @OneToMany(() => ProductRealModel, (type) => type.user)
   products: ProductRealModel[];
+
+  @ManyToMany(()=> RoleReadModel,(roles)=>roles.users)
+  roles:RoleReadModel[];
 }

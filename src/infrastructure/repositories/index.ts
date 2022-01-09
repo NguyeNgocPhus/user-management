@@ -1,4 +1,5 @@
 import { ProductPerository } from './product.repository';
-import { UserReposiroty } from './user.repository';
+import { UserRepository } from './user.repository';
+import {RoleRepository} from "./role.repository";
 
-export const Repository = [UserReposiroty, ProductPerository];
+export const Repository = [UserRepository, ProductPerository,RoleRepository];

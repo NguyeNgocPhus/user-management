@@ -16,11 +16,34 @@ export class InitializeUserEvent extends BaseEvent{
     public createdByName: string;
     public createdById: string;
     public createdDate: number;
+    public avatarPhoto:string;
+    public passwordChangeRequired:boolean;
+    public passwordValidUntilDate:Date;
+    public passwordHash:string;
+    public lockoutEnd:Date;
+    public passwordHashTemporary:string;
+    public lockoutEnabled:boolean;
+    public accessFailCount:number;
 
     constructor(id: string, name: string, status:UserStatus,email: string, phoneNumber: string, normalizedName: string, modifiedById: string, modifiedByName: string, modifiedDate: number
-        , createdById: string, createdByName: string, createdDate: number,transactionId:string,roles:string[]
+        , createdById: string, createdByName: string, createdDate: number,transactionId:string,roles:string[],avatarPhoto:string,
+                passwordChangeRequired:boolean,
+                passwordValidUntilDate:Date,
+                passwordHash:string,
+                lockoutEnd:Date,
+                passwordHashTemporary:string,
+                lockoutEnabled:boolean,
+                accessFailCount:number
     ) {
         super();
+        this.avatarPhoto = avatarPhoto;
+        this.passwordChangeRequired = passwordChangeRequired;
+        this.passwordValidUntilDate = passwordValidUntilDate;
+        this.passwordHash = passwordHash;
+        this.lockoutEnd = lockoutEnd;
+        this.passwordHashTemporary = passwordHashTemporary;
+        this.lockoutEnabled =  lockoutEnabled;
+        this.accessFailCount = accessFailCount;
         this.id = id;
         this.status = status;
         this.name = name;

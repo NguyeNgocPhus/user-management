@@ -35,6 +35,7 @@ export class UserAggregatesRoot extends BaseAggregates {
                 this.createdDate = initializeUserEvent.createdDate;
                 this.createdByName = initializeUserEvent.createdByName;
                 this.createdById = initializeUserEvent.createdById;
+
                 break;
         }
     }
@@ -47,9 +48,25 @@ export class UserAggregatesRoot extends BaseAggregates {
                createdByName: string,
                createdDate: number,
                transactionId:string,
-               roles:string[]) {
+               roles:string[],
+               avatarPhoto:string,
+               passwordChangeRequired:boolean,
+               passwordValidUntilDate:Date,
+               passwordHash:string,
+               lockoutEnd:Date,
+               passwordHashTemporary:string,
+               lockoutEnabled:boolean,
+               accessFailCount:number
+               ) {
         const event = new InitializeUserEvent(id, name,status, email, phoneNumber, normalizedName, modifiedById, modifiedByName, modifiedDate,
-            createdById, createdByName, createdDate,transactionId,roles);
+            createdById, createdByName, createdDate,transactionId,roles, avatarPhoto,
+            passwordChangeRequired,
+            passwordValidUntilDate,
+            passwordHash,
+            lockoutEnd,
+            passwordHashTemporary,
+            lockoutEnabled,
+            accessFailCount);
 
         this.addToDomainEvent(event);
         this.applyDomainEvent(event);

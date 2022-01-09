@@ -20,7 +20,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "NODE_ENV=development node --require ts-node/register ./node_modules/typeorm/cli.js --config src/ormconfig.ts",
-    "migration:add": "npm run typeorm migration:generate -- -n \\\"add role entity\\\"",
+    "migration:add": "npm run typeorm migration:generate -- -n \\\"update user\\\"",
     "migration:update": "npm run typeorm migration:run"
   },
   "dependencies": {
@@ -38,6 +38,7 @@
     "@nestjs/typeorm": "^8.0.2",
     "@types/passport-jwt": "^3.0.6",
     "apollo-server-express": "^3.5.0",
+    "bcrypt": "^5.0.1",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.2",
     "graphql": "^15.8.0",

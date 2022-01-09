@@ -21,9 +21,12 @@ import {ProductRealModel} from "./core/domain/entities/product.entity";
 import {RoleReadModel} from "./core/domain/entities/role.entity";
 import {IsValidRolesConstraint} from "./core/application/common/validator/role-validator";
 import {Validator} from "./core/application/common/validator";
+import { PasswordGeneratorService } from './infrastructure/common/services/password/password.service';
+import {PasswordModule} from "./infrastructure/common/services/password/password.module";
 
 @Module({
     imports: [
+        PasswordModule,
         AutomapperModule.forRoot({
             options: [{name: "APP_MAPPER", pluginInitializer: classes}],
             singular: true

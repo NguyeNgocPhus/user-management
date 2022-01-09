@@ -14,7 +14,7 @@ export class InitializeUserEventHandler implements IEventHandler<InitializeUserE
 
     async handle(event: InitializeUserEvent): Promise<any> {
         const user = await this.mapper.map(event, UserReadModel, InitializeUserEvent);
-
+      //  console.log(event);
         const roles = await  this.roleRepository.getRoleByIds(event.roles);
         user.roles = roles;
         return await this.userRepository.createUserAsync(user);

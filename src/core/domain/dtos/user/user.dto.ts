@@ -36,4 +36,7 @@ export class UserDto {
 
   @Field({ description: 'user created date' })
   public createdDate: number;
+
+  @Field({ description: 'passwordTemporary' })
+  public passwordTemporary: string;
 }

@@ -9,6 +9,8 @@ import {UserStatus} from "../../../../core/domain/common/enum/user.status";
 import {Mapper} from "@automapper/core";
 import {UserDto} from "../../../../core/domain/dtos/user/user.dto";
 import {InjectMapper} from "@automapper/nestjs";
+import {IPasswordGeneratorService} from 'src/core/application/common/service/password.interface';
+
 
 @CommandHandler(createUserCommands)
 export class createUserCommnadHandler
@@ -16,7 +18,8 @@ export class createUserCommnadHandler
   constructor(private userRepository: UserRepository,
               private queryBus: QueryBus,
               private eventBus: EventBus,
-              @InjectMapper() private mapper: Mapper) {
+              @InjectMapper() private mapper: Mapper,
+              private passwordGeneratorService: IPasswordGeneratorService) {
   }
 
   async execute(command: createUserCommands): Promise<any> {
@@ -33,7 +36,10 @@ export class createUserCommnadHandler
 
     const userAggregates = new UserAggregatesRoot(UuidHelper.newUuid());
     const now = DataTimeHelper.getNowUnix();
+    const Datenow = new Date(now);
     const transactionId = UuidHelper.newUuid();
+    const passwordRandom = this.passwordGeneratorService.generateRandomPassword();
+    const passwordHashTemporary = await this.passwordGeneratorService.hashPassword(passwordRandom);
     userAggregates.initialize(
         userAggregates.id,
         command.payload.name,
@@ -48,12 +54,21 @@ export class createUserCommnadHandler
         command.claim.name,
         now,
         transactionId,
-        command.payload.roles
+        command.payload.roles,
+        "avatar.com",
+        true,
+        Datenow,
+        passwordHashTemporary,
+        Datenow,
+        passwordHashTemporary,
+        true,
+        0
     )
     userAggregates.domainEvents.forEach(event => {
       this.eventBus.publish(event);
     })
-    return this.mapper.map(userAggregates, UserDto, UserAggregatesRoot);
-
+    const userDto =  this.mapper.map(userAggregates, UserDto, UserAggregatesRoot);
+    userDto.passwordTemporary = passwordRandom;
+    return userDto;
   }
 }

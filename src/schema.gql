@@ -119,8 +119,8 @@ type Mutation {
   """add product async"""
   AddUserAsync(params: CreateUserRequestDto!): UserDto!
 
-  """add product async"""
-  register: String!
+  """change password first login"""
+  ChangePasswordFirstLogin(params: ChangePasswordFirstLoginRequestDto!): UserDto!
   createRole(params: CreateRoleRequestDto!): RoleDto!
 }
 
@@ -139,6 +139,13 @@ input CreateUserRequestDto {
   email: String!
   phoneNumber: String!
   roles: [String!]!
+}
+
+input ChangePasswordFirstLoginRequestDto {
+  phoneNumber: String!
+  currentPassword: String!
+  newPassword: String!
+  confirmPassword: String!
 }
 
 """create role request"""

@@ -23,6 +23,7 @@ import {IsValidRolesConstraint} from "./core/application/common/validator/role-v
 import {Validator} from "./core/application/common/validator";
 import { PasswordGeneratorService } from './infrastructure/common/services/password/password.service';
 import {PasswordModule} from "./infrastructure/common/services/password/password.module";
+import {EventStoreModule} from "./infrastructure/common/services/event-store/event-store.module";
 
 @Module({
     imports: [
@@ -31,6 +32,7 @@ import {PasswordModule} from "./infrastructure/common/services/password/password
             options: [{name: "APP_MAPPER", pluginInitializer: classes}],
             singular: true
         }),
+        EventStoreModule,
         AuthenticationModule,
         ConfigServiceModule,
         TypeOrmModule.forRootAsync({

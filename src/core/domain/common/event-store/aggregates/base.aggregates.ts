@@ -1,4 +1,5 @@
 import { AutoMap } from "@automapper/classes";
+import { NotImplementedException } from "@nestjs/common";
 import {AggregateRoot} from "@nestjs/cqrs";
 import {BaseEvent} from "../event/base.event";
 
@@ -9,6 +10,7 @@ export class BaseAggregates extends  AggregateRoot{
     }
     public id:string;
     public domainEvents: BaseEvent[];
+    public streamName : string;
 
     @AutoMap()
     public modifiedByName: string;
@@ -26,5 +28,8 @@ export class BaseAggregates extends  AggregateRoot{
     addToDomainEvent(event: BaseEvent): void {
         //console.log(event)
         this.domainEvents.push(event);
+    }
+    applyDomainEvent(event: BaseEvent): void {
+        throw new NotImplementedException()
     }
 }

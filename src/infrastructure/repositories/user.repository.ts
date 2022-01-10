@@ -15,4 +15,18 @@ export class UserRepository extends Repository<UserReadModel> {
   async getUserByEmailOrPhoneNumber(email:string,phoneNumber:string){
     return await this.findOne({where:[{email},{phoneNumber}]});
   }
+  async getUserByPhoneNumber(phoneNumber:string){
+    return await this.findOne({phoneNumber});
+  }
+  async updatePasswordAtFirstLoginAsync(user: UserReadModel): Promise<any> {
+    return await this.update(user.id, {
+      passwordHash: user.passwordHash,
+      passwordChangeRequired: user.passwordChangeRequired,
+      passwordValidUntilDate: user.passwordValidUntilDate,
+      passwordHashTemporary: user.passwordHashTemporary,
+      modifiedDate: user.modifiedDate,
+      modifiedById: user.modifiedById,
+      modifiedByName: user.modifiedByName,
+    });
+  }
 }

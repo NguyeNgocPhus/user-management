@@ -10,6 +10,7 @@ import {Mapper} from "@automapper/core";
 import {UserDto} from "../../../../core/domain/dtos/user/user.dto";
 import {InjectMapper} from "@automapper/nestjs";
 import {IPasswordGeneratorService} from 'src/core/application/common/service/password.interface';
+import {IEventStoreService} from "../../../../core/application/common/service/event-store.interface";
 
 
 @CommandHandler(createUserCommands)
@@ -19,7 +20,9 @@ export class createUserCommnadHandler
               private queryBus: QueryBus,
               private eventBus: EventBus,
               @InjectMapper() private mapper: Mapper,
-              private passwordGeneratorService: IPasswordGeneratorService) {
+              private passwordGeneratorService: IPasswordGeneratorService,
+              private eventStoreDb : IEventStoreService
+              ) {
   }
 
   async execute(command: createUserCommands): Promise<any> {
@@ -64,9 +67,7 @@ export class createUserCommnadHandler
         true,
         0
     )
-    userAggregates.domainEvents.forEach(event => {
-      this.eventBus.publish(event);
-    })
+    await  this.eventStoreDb.startStreamAsync(userAggregates.streamName,userAggregates);
     const userDto =  this.mapper.map(userAggregates, UserDto, UserAggregatesRoot);
     userDto.passwordTemporary = passwordRandom;
     return userDto;

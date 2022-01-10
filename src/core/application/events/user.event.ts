@@ -61,3 +61,35 @@ export class InitializeUserEvent extends BaseEvent{
         this.roles = roles;
     }
 }
+
+export class ChangePasswordFirstLoginEvent extends BaseEvent {
+    public id: string;
+    public transactionId: string;
+    public passwordHash: string;
+    public passwordHashTemporary: string;
+    public passwordChangeRequired: boolean;
+    public passwordValidUntilDate: Date;
+    public modifiedByName: string;
+    public modifiedById: string;
+    public modifiedDate: number;
+
+    constructor(id: string, transactionId: string, passwordHash: string, passwordHashTemporary: string
+        , passwordChangeRequired: boolean, passwordValidUntilDate: Date, modifiedByName: string,
+                modifiedById: string,
+                modifiedDate: number) {
+        super();
+        this.id = id;
+        this.transactionId = transactionId;
+        this.passwordHash = passwordHash;
+        this.passwordHashTemporary = passwordHashTemporary;
+        this.passwordChangeRequired = passwordChangeRequired;
+        this.passwordValidUntilDate = passwordValidUntilDate;
+        this.modifiedByName = modifiedByName;
+        this.modifiedById = modifiedById;
+        this.modifiedDate = modifiedDate;
+        this.eventName = ChangePasswordFirstLoginEvent.name;
+        //   this.transactionId =transactionId;
+
+
+    }
+}

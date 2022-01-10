@@ -8,6 +8,8 @@ import {UserReadModel} from "../../../core/domain/entities/user.entity";
 import {UserDto} from "../../../core/domain/dtos/user/user.dto";
 import {UserAggregatesRoot} from "../../../core/domain/aggregates/user.aggregates";
 import {InitializeUserEvent} from "../../../core/application/events/user.event";
+import {ChangePasswordFirstLoginRequestDto} from "../../../core/domain/dtos/user/change-password-first-login-request.dto";
+import {ChangePasswordFirstLoginCommand} from "../../../core/application/commands/user/change-password-first-login.command";
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -17,7 +19,9 @@ export class UserProfile extends AutomapperProfile {
 
     mapProfile(): MappingProfile {
         return mapper => {
-
+            mapper.createMap(ChangePasswordFirstLoginRequestDto,ChangePasswordFirstLoginCommand)
+                .forMember(d => d.payload, mapFrom(s => s))
+                .forMember(d => d.claim, mapWithArguments(currentUserResolver))
             mapper.createMap(CreateUserRequestDto, createUserCommands)
                 .forMember(d => d.payload, mapFrom(s => s))
                 .forMember(d => d.claim, mapWithArguments(currentUserResolver))

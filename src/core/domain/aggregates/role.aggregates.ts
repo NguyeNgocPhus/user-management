@@ -14,7 +14,7 @@ export class RoleAggregatesRoot extends BaseAggregates{
         super();
         this.id =  id ;
         this.domainEvents=[];
-
+        this.streamName = `Role-${id}`;
     }
     applyDomainEvent(event:BaseEvent){
         switch (event.eventName) {

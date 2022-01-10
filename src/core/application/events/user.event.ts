@@ -1,5 +1,6 @@
 import {UserStatus} from "../../domain/common/enum/user.status";
 import {BaseEvent} from "../../domain/common/event-store/event/base.event";
+import {AutoMap} from "@automapper/classes";
 
 
 export class InitializeUserEvent extends BaseEvent{
@@ -61,7 +62,52 @@ export class InitializeUserEvent extends BaseEvent{
         this.roles = roles;
     }
 }
+export class updateAccessFailedCountEvent extends BaseEvent{
+    public id: string;
+    public transactionId: string;
+    public accessFailCount:number;
+    public modifiedByName: string;
+    public modifiedById: string;
+    public modifiedDate: number;
+    constructor(id: string, transactionId: string,accessFailCount:number, modifiedByName: string,
+                modifiedById: string,
+                modifiedDate: number) {
+        super();
+        this.id = id;
+        this.transactionId = transactionId;
+        this.accessFailCount = accessFailCount;
+        this.modifiedByName = modifiedByName;
+        this.modifiedById = modifiedById;
+        this.modifiedDate = modifiedDate;
+        this.eventName = updateAccessFailedCountEvent.name;
+        //   this.transactionId =transactionId;
 
+
+    }
+}
+export class updateLockoutEndEvent extends BaseEvent{
+    public id: string;
+    public transactionId: string;
+    public lockoutEnd:Date;
+    public modifiedByName: string;
+    public modifiedById: string;
+    public modifiedDate: number;
+    constructor(id: string, transactionId: string,lockoutEnd:Date, modifiedByName: string,
+                modifiedById: string,
+                modifiedDate: number) {
+        super();
+        this.id = id;
+        this.transactionId = transactionId;
+        this.lockoutEnd = lockoutEnd;
+        this.modifiedByName = modifiedByName;
+        this.modifiedById = modifiedById;
+        this.modifiedDate = modifiedDate;
+        this.eventName = updateLockoutEndEvent.name;
+        //   this.transactionId =transactionId;
+
+
+    }
+}
 export class ChangePasswordFirstLoginEvent extends BaseEvent {
     public id: string;
     public transactionId: string;
@@ -88,6 +134,35 @@ export class ChangePasswordFirstLoginEvent extends BaseEvent {
         this.modifiedById = modifiedById;
         this.modifiedDate = modifiedDate;
         this.eventName = ChangePasswordFirstLoginEvent.name;
+        //   this.transactionId =transactionId;
+
+
+    }
+}
+export class UpdatePasswordEvent extends  BaseEvent{
+    @AutoMap()
+    public id: string;
+    @AutoMap()
+    public transactionId: string;
+    @AutoMap()
+    public passwordHash: string;
+    @AutoMap()
+    public modifiedByName: string;
+    @AutoMap()
+    public modifiedById: string;
+    @AutoMap()
+    public modifiedDate: number;
+    constructor(id: string, transactionId: string, passwordHash: string,modifiedByName: string,
+                modifiedById: string,
+                modifiedDate: number) {
+        super();
+        this.id = id;
+        this.transactionId = transactionId;
+        this.passwordHash = passwordHash;
+        this.modifiedByName = modifiedByName;
+        this.modifiedById = modifiedById;
+        this.modifiedDate = modifiedDate;
+        this.eventName = UpdatePasswordEvent.name;
         //   this.transactionId =transactionId;
 
 

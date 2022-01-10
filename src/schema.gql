@@ -121,6 +121,12 @@ type Mutation {
 
   """change password first login"""
   ChangePasswordFirstLogin(params: ChangePasswordFirstLoginRequestDto!): UserDto!
+
+  """sign by password"""
+  SignInWithPasswordAsync(params: SignInWithPasswordDto!): String!
+
+  """change password"""
+  ChangePassWordAsync(params: ChangePasswordRequestDto!): UserDto!
   createRole(params: CreateRoleRequestDto!): RoleDto!
 }
 
@@ -142,6 +148,20 @@ input CreateUserRequestDto {
 }
 
 input ChangePasswordFirstLoginRequestDto {
+  phoneNumber: String!
+  currentPassword: String!
+  newPassword: String!
+  confirmPassword: String!
+}
+
+"""sign with password"""
+input SignInWithPasswordDto {
+  phoneNumber: String!
+  password: String!
+}
+
+"""avc"""
+input ChangePasswordRequestDto {
   phoneNumber: String!
   currentPassword: String!
   newPassword: String!

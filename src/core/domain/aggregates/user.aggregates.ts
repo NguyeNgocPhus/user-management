@@ -1,7 +1,7 @@
 import {BaseAggregates} from "../common/event-store/aggregates/base.aggregates";
 import {UuidHelper} from "../../../infrastructure/common/helper";
 import {UserStatus} from "../common/enum/user.status";
-import {ChangePasswordFirstLoginEvent, InitializeUserEvent} from "../../application/events/user.event";
+import {ChangePasswordFirstLoginEvent, InitializeUserEvent, updateAccessFailedCountEvent, updateLockoutEndEvent, UpdatePasswordEvent} from "../../application/events/user.event";
 import {BaseEvent} from "../common/event-store/event/base.event";
 
 
@@ -65,6 +65,30 @@ export class UserAggregatesRoot extends BaseAggregates {
              //   this._lockoutEnd = changePasswordFirstLoginEvent.lockoutEnd;
                 this._passwordHashTemporary = changePasswordFirstLoginEvent.passwordHashTemporary;
                 break;
+            case updateAccessFailedCountEvent.name:
+                const updateAccessFailedCount= event as updateAccessFailedCountEvent;
+                this.id = updateAccessFailedCount.id;
+                this.modifiedDate = updateAccessFailedCount.modifiedDate;
+                this.modifiedById = updateAccessFailedCount.modifiedById;
+                this.modifiedByName = updateAccessFailedCount.modifiedByName;
+                this._accessFailCount = updateAccessFailedCount.accessFailCount;
+                break;
+            case updateLockoutEndEvent.name:
+                const updateLockoutEnd= event as updateLockoutEndEvent;
+                this.id = updateLockoutEnd.id;
+                this.modifiedDate = updateLockoutEnd.modifiedDate;
+                this.modifiedById = updateLockoutEnd.modifiedById;
+                this.modifiedByName = updateLockoutEnd.modifiedByName;
+                this._lockoutEnd = updateLockoutEnd.lockoutEnd;
+                break;
+            case UpdatePasswordEvent.name:
+                const updatePasswordEvent= event as UpdatePasswordEvent;
+                this.id = updatePasswordEvent.id;
+                this.modifiedDate = updatePasswordEvent.modifiedDate;
+                this.modifiedById = updatePasswordEvent.modifiedById;
+                this.modifiedByName = updatePasswordEvent.modifiedByName;
+                this._passwordHash = updatePasswordEvent.passwordHash;
+                break;
         }
     }
     initialize(id: string, name: string, normalizedName: string, email: string, phoneNumber: string,
@@ -110,6 +134,33 @@ export class UserAggregatesRoot extends BaseAggregates {
         this.applyDomainEvent(event);
         this.addToDomainEvent(event);
     }
+    updateAccessFailedCount(id:string,transactionId:string,accessFailCount:number, modifiedByName: string,
+                            modifiedById: string,
+                            modifiedDate: number){
+        const event = new updateAccessFailedCountEvent(id,transactionId,accessFailCount, modifiedByName,
+            modifiedById,
+            modifiedDate)
+        this.applyDomainEvent(event);
+        this.addToDomainEvent(event);
+    }
+    updateLockoutEnd(id:string,transactionId:string,lockoutEnd:Date, modifiedByName: string,
+                            modifiedById: string,
+                            modifiedDate: number){
+        const event = new updateLockoutEndEvent(id,transactionId,lockoutEnd, modifiedByName,
+            modifiedById,
+            modifiedDate)
+        this.applyDomainEvent(event);
+        this.addToDomainEvent(event);
+    }
+    updatePassword(id:string,transactionId:string,passwordHash:string, modifiedByName: string,
+                     modifiedById: string,
+                     modifiedDate: number){
+        const event = new UpdatePasswordEvent(id,transactionId,passwordHash, modifiedByName,
+            modifiedById,
+            modifiedDate)
+        this.applyDomainEvent(event);
+        this.addToDomainEvent(event);
+    }
 
     get name() {
         return this._name;
@@ -134,13 +185,24 @@ export class UserAggregatesRoot extends BaseAggregates {
     get passwordHashTemporary() {
         return this._passwordHashTemporary;
     }
-
+    get passwordHash(){
+        return this._passwordHash;
+    }
     get passwordChangeRequired() {
         return this._passwordChangeRequired;
     }
 
     get passwordValidUntilDate() {
         return this._passwordValidUntilDate;
+    }
+    get lockOutEnable(){
+        return this._lockoutEnabled;
+    }
+    get accessFailedCount(){
+        return this._accessFailCount;
+    }
+    get lockoutEnd(){
+        return this._lockoutEnd;
     }
 
 

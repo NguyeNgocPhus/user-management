@@ -2,7 +2,6 @@ import {Args, Context, Mutation, Resolver} from "@nestjs/graphql";
 import {CreateRoleRequestDto} from "../../core/domain/dtos/role/create-role-request.dto";
 import {InjectMapper} from "@automapper/nestjs";
 import {Mapper} from "@automapper/core";
-import {RoleReadModel} from "../../core/domain/entities/role.entity";
 import {RoleRepository} from "../repositories/role.repository";
 import {PermConst} from "../../core/application/common/constants/perm.constants";
 import {Permissions} from "../common/authorization/decorator/permission.decorator";
@@ -11,7 +10,6 @@ import { JwtAuthGuard } from "../common/authentication/guards/jwt-auth.guard";
 import { PermissionGuards } from "../common/authorization/guards/permission.guards";
 import { CreateRoleCommand } from "src/core/application/commands/role/create-role.command";
 import {CommandBus} from "@nestjs/cqrs";
-import { UserDto } from "src/core/domain/dtos/user/user.dto";
 import { RoleDto } from "src/core/domain/dtos/role/role.dto";
 
 

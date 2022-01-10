@@ -1,4 +1,4 @@
-import { CreateUserRequestDto } from './../../core/domain/dtos/user/create-user-request.dto';
+import { CreateUserRequestDto } from '../../core/domain/dtos/user/create-user-request.dto';
 import { UserReadModel } from './../../core/domain/entities/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import {Injectable, NotFoundException} from '@nestjs/common';
@@ -16,7 +16,9 @@ export class UserRepository extends Repository<UserReadModel> {
     return await this.findOne({where:[{email},{phoneNumber}]});
   }
   async getUserByPhoneNumber(phoneNumber:string){
-    return await this.findOne({phoneNumber});
+    return await this.findOne({phoneNumber},{
+      relations:['roles']
+    });
   }
   async updatePasswordAtFirstLoginAsync(user: UserReadModel): Promise<any> {
     return await this.update(user.id, {
@@ -24,6 +26,14 @@ export class UserRepository extends Repository<UserReadModel> {
       passwordChangeRequired: user.passwordChangeRequired,
       passwordValidUntilDate: user.passwordValidUntilDate,
       passwordHashTemporary: user.passwordHashTemporary,
+      modifiedDate: user.modifiedDate,
+      modifiedById: user.modifiedById,
+      modifiedByName: user.modifiedByName,
+    });
+  }
+  async updatePassWordAsync(user: UserReadModel): Promise<any> {
+    return await this.update(user.id, {
+      passwordHash: user.passwordHash,
       modifiedDate: user.modifiedDate,
       modifiedById: user.modifiedById,
       modifiedByName: user.modifiedByName,

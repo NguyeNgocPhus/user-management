@@ -24,6 +24,7 @@ import {Validator} from "./core/application/common/validator";
 import { PasswordGeneratorService } from './infrastructure/common/services/password/password.service';
 import {PasswordModule} from "./infrastructure/common/services/password/password.module";
 import {EventStoreModule} from "./infrastructure/common/services/event-store/event-store.module";
+import {UntilModule} from "./infrastructure/common/services/until/until.module";
 
 @Module({
     imports: [
@@ -33,6 +34,7 @@ import {EventStoreModule} from "./infrastructure/common/services/event-store/eve
             singular: true
         }),
         EventStoreModule,
+        UntilModule,
         AuthenticationModule,
         ConfigServiceModule,
         TypeOrmModule.forRootAsync({
@@ -51,7 +53,7 @@ import {EventStoreModule} from "./infrastructure/common/services/event-store/eve
                     migrationsDir: 'dist/database/migrations',
                 },
                 autoLoadEntities: true,
-                migrationsTableName: 'phu-migration',
+                migrationsTableName: 'phu-migration',logging: "all"
             }),
         }),
         GraphQLModule.forRoot({

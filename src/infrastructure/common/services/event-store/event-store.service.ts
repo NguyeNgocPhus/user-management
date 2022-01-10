@@ -64,14 +64,15 @@ export class EventStoreService implements  IEventStoreService{
                 direction: direction,
                 fromRevision: expectedRevision,
             });
-         ///   console.log(events);
             for await (const resolvedEvent of events) {
                 let event = {} as BaseEvent;
                 Object.assign(event, resolvedEvent?.event.data);
+               // console.log(event)
                 // Don't need to add events to domain to prevent reapply those events
                 //aggregate.addToDomainEvent(event);
                 aggregate.applyDomainEvent(event);
             }
+           // console.log(aggregate)
             return aggregate;
         } catch (e) {
             throw new e

@@ -10,6 +10,7 @@ export class PasswordGeneratorService implements IPasswordGeneratorService{
     }
 
     async verifyPassword(hashPassword: string, password: string) {
+      //  console.log(hashPassword,password)
         return await bcrypt.compare(password, hashPassword);
     }
 

@@ -11,22 +11,25 @@ import { PermissionGuards } from "../common/authorization/guards/permission.guar
 import { CreateRoleCommand } from "src/core/application/commands/role/create-role.command";
 import {CommandBus} from "@nestjs/cqrs";
 import { RoleDto } from "src/core/domain/dtos/role/role.dto";
+import {CreateTypeRequestDto} from "../../core/domain/dtos/type/create-type-request.dto";
+import {CreateTypeCommand} from "../../core/application/commands/type/create-type.command";
+import {TypeDto} from "../../core/domain/dtos/type/type.dto";
 
 
 @Resolver()
-export class RoleResolver {
+export class TypeResolver {
     constructor(@InjectMapper() private mapper:Mapper, private rolerepository:RoleRepository,
                 private commandBus : CommandBus) {
     }
 
-    @Mutation(()=>RoleDto)
+    @Mutation(()=>TypeDto)
     @UseGuards(JwtAuthGuard,PermissionGuards)
     @Permissions(PermConst.ADMIN)
-    async createRole(@Args('params') data: CreateRoleRequestDto,@Context() context ){
-        const command =  this.mapper.map(data,CreateRoleCommand,CreateRoleRequestDto,{extraArguments:{claim:context?.req?.user}});
+    async createType(@Args('params') data: CreateTypeRequestDto,@Context() context ){
+        const command =  this.mapper.map(data,CreateTypeCommand,CreateTypeRequestDto,{extraArguments:{claim:context?.req?.user}});
 
         const result = await  this.commandBus.execute(command);
-       // console.log(result)
+
         return result;
 
     }

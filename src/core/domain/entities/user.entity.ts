@@ -70,8 +70,6 @@ export class UserReadModel extends  BaseEnity{
   @Column({type: 'enum', enum: UserStatus, default: UserStatus.Active})
   status: UserStatus;
 
-  @OneToMany(() => ProductRealModel, (type) => type.user)
-  products: ProductRealModel[];
 
   @ManyToMany(() => RoleReadModel, (roles) => roles.users)
   roles: RoleReadModel[];

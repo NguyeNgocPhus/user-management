@@ -18,6 +18,11 @@ type ProductDto {
 
   """product quantity"""
   quantity: Float!
+  color: String!
+  image: String!
+  status: String!
+  sale: Float!
+  sellNumber: Float!
 
   """product modified by name"""
   modifiedByName: String!
@@ -107,6 +112,32 @@ type RoleDto {
   createdDate: Float!
 }
 
+type TypeDto {
+  id: String!
+  name: String!
+  normalizeName: String!
+  description: String!
+  type: String!
+
+  """user modified by name"""
+  modifiedByName: String!
+
+  """user modified by id"""
+  modifiedById: String!
+
+  """user modified date"""
+  modifiedDate: Float!
+
+  """user created by name"""
+  createdByName: String!
+
+  """user created by id"""
+  createdById: String!
+
+  """user created date"""
+  createdDate: Float!
+}
+
 type Query {
   GetListProduct: String!
   createToken: String!
@@ -128,14 +159,23 @@ type Mutation {
   """change password"""
   ChangePassWordAsync(params: ChangePasswordRequestDto!): UserDto!
   createRole(params: CreateRoleRequestDto!): RoleDto!
+  createType(params: CreateTypeRequestDto!): TypeDto!
+  addPictures(params: CreatePictureRequestDto!): Boolean!
 }
 
 """input product data"""
 input CreateProductRequestDto {
   name: String!
   normalizedName: String!
+  description: String!
   price: Float!
   quantity: Float!
+
+  """Permission list"""
+  size: [String!]!
+  color: String!
+  image: String!
+  type: String!
 }
 
 """input user data"""
@@ -175,3 +215,19 @@ input CreateRoleRequestDto {
   normalizedName: String!
   description: String!
 }
+
+"""create type request"""
+input CreateTypeRequestDto {
+  name: String!
+  normalizeName: String!
+  description: String!
+  type: String!
+}
+
+input CreatePictureRequestDto {
+  productId: String!
+  pictures: [Upload!]
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload

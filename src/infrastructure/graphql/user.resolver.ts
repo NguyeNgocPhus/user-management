@@ -1,71 +1,102 @@
 import { PermissionGuards } from './../common/authorization/guards/permission.guards';
-import {JwtAuthGuard} from './../common/authentication/guards/jwt-auth.guard';
-import {CreateUserRequestDto} from '../../core/domain/dtos/user/create-user-request.dto';
-import {Resolver, Query, Args, Mutation, Context} from '@nestjs/graphql';
+import { JwtAuthGuard } from './../common/authentication/guards/jwt-auth.guard';
+import { CreateUserRequestDto } from '../../core/domain/dtos/user/create-user-request.dto';
+import { Resolver, Query, Args, Mutation, Context } from '@nestjs/graphql';
 import { UserRepository } from '../repositories/user.repository';
 import { CommandBus } from '@nestjs/cqrs';
-import {createUserCommands} from 'src/core/application/commands/user/create-user.command';
-import {JwtService} from '@nestjs/jwt';
-import {Req, UseGuards} from '@nestjs/common';
-import {Permissions} from '../common/authorization/decorator/permission.decorator';
-import {Claims} from "../common/authentication/claims/claims";
-import {UuidHelper} from "../common/helper";
-import {PermConst} from "../../core/application/common/constants/perm.constants";
-import {Mapper} from "@automapper/core";
-import {InjectMapper} from "@automapper/nestjs";
-import {UserDto} from 'src/core/domain/dtos/user/user.dto';
-import {ChangePasswordFirstLoginRequestDto} from "../../core/domain/dtos/user/change-password-first-login-request.dto";
-import {ChangePasswordFirstLoginCommand} from "../../core/application/commands/user/change-password-first-login.command";
-import {SignInWithPasswordDto} from "../../core/domain/dtos/user/sign-in-with-password-request.dto";
-import {SignInWithPasswordCommand} from "../../core/application/commands/user/sign-in-with-password-command";
-import {ChangePasswordCommand} from "../../core/application/commands/user/change-password.command.handler";
-import {ChangePasswordRequestDto} from "../../core/domain/dtos/user/change-passoword-request.dto";
-import {AuthGuard} from "@nestjs/passport";
+import { createUserCommands } from 'src/core/application/commands/user/create-user.command';
+import { JwtService } from '@nestjs/jwt';
+import { Req, UseGuards } from '@nestjs/common';
+import { Permissions } from '../common/authorization/decorator/permission.decorator';
+import { Claims } from '../common/authentication/claims/claims';
+import { UuidHelper } from '../common/helper';
+import { PermConst } from '../../core/application/common/constants/perm.constants';
+import { Mapper } from '@automapper/core';
+import { InjectMapper } from '@automapper/nestjs';
+import { UserDto } from 'src/core/domain/dtos/user/user.dto';
+import { ChangePasswordFirstLoginRequestDto } from '../../core/domain/dtos/user/change-password-first-login-request.dto';
+import { ChangePasswordFirstLoginCommand } from '../../core/application/commands/user/change-password-first-login.command';
+import { SignInWithPasswordDto } from '../../core/domain/dtos/user/sign-in-with-password-request.dto';
+import { SignInWithPasswordCommand } from '../../core/application/commands/user/sign-in-with-password-command';
+import { ChangePasswordCommand } from '../../core/application/commands/user/change-password.command.handler';
+import { ChangePasswordRequestDto } from '../../core/domain/dtos/user/change-passoword-request.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Resolver()
 export class UserResolver {
   constructor(
-      private userRepository: UserRepository,
-      private commandBus: CommandBus,
-      private jwtService: JwtService,
-      @InjectMapper() private mapper: Mapper
-  ) {
-  }
+    private userRepository: UserRepository,
+    private commandBus: CommandBus,
+    private jwtService: JwtService,
+    @InjectMapper() private mapper: Mapper,
+  ) {}
 
-  @UseGuards(JwtAuthGuard,PermissionGuards)
+  @UseGuards(JwtAuthGuard, PermissionGuards)
   @Permissions(PermConst.ADMIN)
   @Mutation((returns) => UserDto, { description: 'add product async' })
-  async AddUserAsync(@Args('params') data: CreateUserRequestDto,@Context() context): Promise<any> {
-    const command =await this.mapper.map(data,createUserCommands,CreateUserRequestDto,{extraArguments: {claim:context?.req?.user}})
+  async AddUserAsync(
+    @Args('params') data: CreateUserRequestDto,
+    @Context() context,
+  ): Promise<any> {
+    const command = await this.mapper.map(
+      data,
+      createUserCommands,
+      CreateUserRequestDto,
+      { extraArguments: { claim: context?.req?.user } },
+    );
 
-    const result = await  this.commandBus.execute(command);
+    const result = await this.commandBus.execute(command);
 
     return result;
-
   }
 
   @UseGuards(JwtAuthGuard, PermissionGuards)
   @Permissions(PermConst.ADMIN)
-  @Mutation((returns) => UserDto, {description: 'change password first login'})
-  async ChangePasswordFirstLogin(@Args('params') data: ChangePasswordFirstLoginRequestDto, @Context() context): Promise<String> {
-    const command = this.mapper.map(data, ChangePasswordFirstLoginCommand, ChangePasswordFirstLoginRequestDto,
-        {extraArguments: {claim: context?.req?.user}});
+  @Mutation((returns) => UserDto, {
+    description: 'change password first login',
+  })
+  async ChangePasswordFirstLogin(
+    @Args('params') data: ChangePasswordFirstLoginRequestDto,
+    @Context() context,
+  ): Promise<String> {
+    const command = this.mapper.map(
+      data,
+      ChangePasswordFirstLoginCommand,
+      ChangePasswordFirstLoginRequestDto,
+      { extraArguments: { claim: context?.req?.user } },
+    );
+
+    const result = await this.commandBus.execute(command);
+
+    return result;
+  }
+
+  @Mutation((returns) => String, { description: 'sign by password' })
+  async SignInWithPasswordAsync(
+    @Args('params') data: SignInWithPasswordDto,
+    @Context() context,
+  ): Promise<any> {
+    const command = new SignInWithPasswordCommand(
+      data.phoneNumber,
+      data.password,
+    );
     const result = await this.commandBus.execute(command);
     return result;
   }
 
-  @Mutation((returns) => String, {description: "sign by password"})
-  async SignInWithPasswordAsync(@Args('params') data: SignInWithPasswordDto, @Context() context): Promise<any> {
-    const command = new SignInWithPasswordCommand(data.phoneNumber, data.password);
-    const result = await this.commandBus.execute(command);
-    return result;
-  }
-
-  @Mutation((returns) => UserDto, {description: "change password"})
+  @Mutation((returns) => UserDto, { description: 'change password' })
   @UseGuards(JwtAuthGuard)
-  async ChangePassWordAsync(@Args('params') data: ChangePasswordRequestDto, @Context() context): Promise<any> {
-    const command = this.mapper.map(data,ChangePasswordCommand,ChangePasswordRequestDto,{extraArguments:{claim:context.req.user}});
-    const result = await  this.commandBus.execute(command);
+  async ChangePassWordAsync(
+    @Args('params') data: ChangePasswordRequestDto,
+    @Context() context,
+  ): Promise<any> {
+    const command = this.mapper.map(
+      data,
+      ChangePasswordCommand,
+      ChangePasswordRequestDto,
+      { extraArguments: { claim: context.req.user } },
+    );
+    const result = await this.commandBus.execute(command);
     return result;
   }
 
@@ -73,7 +104,7 @@ export class UserResolver {
   async createToken() {
     const claims = new Claims();
     claims.id = UuidHelper.newUuid();
-    claims.name = "Nguyen Ngoc Phu";
+    claims.name = 'Nguyen Ngoc Phu';
     claims.roles = [];
     claims.permission = ['ADMIN'];
     return await this.jwtService.signAsync(JSON.stringify(claims));

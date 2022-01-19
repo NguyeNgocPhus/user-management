@@ -25,9 +25,17 @@ import { PasswordGeneratorService } from './infrastructure/common/services/passw
 import {PasswordModule} from "./infrastructure/common/services/password/password.module";
 import {EventStoreModule} from "./infrastructure/common/services/event-store/event-store.module";
 import {UntilModule} from "./infrastructure/common/services/until/until.module";
+import {IsValidTypeConstraint} from "./core/application/common/validator/type-validator";
+import { ServeStaticModule } from '@nestjs/serve-static';
+
 
 @Module({
     imports: [
+
+        //{"query":"mutation AddProfile($picture:[Upload!]!){\n  addProfilePicture(picture1:$picture,params:{\n    productId:\"123123\"\n  })\n}"}
+        // ServeStaticModule.forRoot({
+        //     rootPath: join(__dirname,'infrastructure','images'),   // <-- path to the static files
+        // }),
         PasswordModule,
         AutomapperModule.forRoot({
             options: [{name: "APP_MAPPER", pluginInitializer: classes}],
@@ -47,13 +55,14 @@ import {UntilModule} from "./infrastructure/common/services/until/until.module";
                 username: configService.get('DB_USER'),
                 password: configService.get('DB_PASSWORD'),
                 database: configService.get('DB_DATABASE'),
-                entities: ['dist/src/core/domain/entities/**/*.entity.{ts,js,d.ts}'],
+                entities: ['dist/core/domain/entities/**/*.entity.{ts,js,d.ts}'],
                 migrations: ['dist/database/*.js'],
                 cli: {
                     migrationsDir: 'dist/database/migrations',
                 },
                 autoLoadEntities: true,
-                migrationsTableName: 'phu-migration',logging: "all"
+                migrationsTableName: 'phu-migration',
+                logging: "all"
             }),
         }),
         GraphQLModule.forRoot({
@@ -72,7 +81,8 @@ import {UntilModule} from "./infrastructure/common/services/until/until.module";
         }),
     ],
     controllers: [],
-    providers: [...Resolvers, ...CommandHandler, ...QueryHandler, ...EventHandler, ...Profiles,IsValidRolesConstraint],
+    providers: [...Resolvers, ...CommandHandler, ...QueryHandler, ...EventHandler, ...Profiles,IsValidRolesConstraint,IsValidTypeConstraint],
 })
 export class AppModule {
+
 }

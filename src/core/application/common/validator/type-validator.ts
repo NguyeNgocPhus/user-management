@@ -7,13 +7,13 @@ import {TypeRepository} from "../../../../infrastructure/repositories/type.repos
 
 @ValidatorConstraint({async: true})
 @Injectable()
-export class IsValidRolesConstraint implements ValidatorConstraintInterface {
-    constructor(private roleRepository:RoleRepository) {
+export class IsValidTypeConstraint implements ValidatorConstraintInterface {
+    constructor(private typeRepository: TypeRepository) {
     }
 
-    async validate(role: string[], args: ValidationArguments) {
-       // console.log(this.roleRepository)
-        const Exist_Type =  await this.roleRepository.getRoleByIds(role);
+    async validate(id: string, args: ValidationArguments) {
+        // console.log(this.roleRepository)
+        const Exist_Type = await this.typeRepository.getTypeByIdAsync(id);
         if(!Exist_Type){
             return false;
         }else {
@@ -28,7 +28,7 @@ export class IsValidRolesConstraint implements ValidatorConstraintInterface {
     }
 }
 
-export function IsValidRoles(validationOptions?: ValidationOptions) {
+export function IsValidType(validationOptions?: ValidationOptions) {
     return function (object: Object, propertyName: string) {
         registerDecorator({
             name: 'isValidRole',
@@ -36,7 +36,7 @@ export function IsValidRoles(validationOptions?: ValidationOptions) {
             propertyName: propertyName,
             constraints: [],
             options: validationOptions,
-            validator: IsValidRolesConstraint
+            validator: IsValidTypeConstraint
         });
     };
 }

@@ -17,7 +17,7 @@ export class PictureResolver {
     constructor(@InjectMapper() private mapper: Mapper, private commandBus: CommandBus) {
     }
 
-
+    //{"query":"mutation addPicture($picture:[Upload!]!){\n  addPictures(params:{\n    productId:\"44419852-9115-4121-8ca1-88d6dbaa1f8d\",\n    pictures:$picture\n  })\n}"}
     @Mutation(() => Boolean)
     @UseGuards(JwtAuthGuard, PermissionGuards)
     @Permissions(PermConst.ADMIN)
@@ -25,10 +25,8 @@ export class PictureResolver {
         @Args("params") data: CreatePictureRequestDto,@Context() context
     ){
         try {
-
-
             const pictures = await  Promise.all(data.pictures);
-
+            console.log(pictures)
             const command = new CreatePictureCommand(data.productId,pictures,context?.req?.user);
             const result = await  this.commandBus.execute(command);
 

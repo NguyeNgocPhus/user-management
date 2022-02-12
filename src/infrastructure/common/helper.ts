@@ -18,11 +18,17 @@ export class fileUploadHelper {
             case fileTypeEnum.JPG:
                 await this.upload(file,fileTypeEnum.JPG);
                 break;
-            case fileTypeEnum.PNG:
-                await this.upload(file,fileTypeEnum.PNG);
+            case fileTypeEnum.XLSX:
+                await this.upload(file,fileTypeEnum.XLSX);
                 break;
             case fileTypeEnum.JPEG:
                  await this.upload(file,fileTypeEnum.JPEG);
+                break;
+            case fileTypeEnum.XLS:
+                await this.upload(file,fileTypeEnum.XLS);
+                break;
+            case fileTypeEnum.DOCX:
+                await this.upload(file,fileTypeEnum.DOCX);
                 break;
             default:
                 throw new WrongTypeFileException({message: "wrong type file"});
@@ -30,13 +36,19 @@ export class fileUploadHelper {
         }
     }
     static async upload(file:FileUpload,fileType:string){
-        file.filename = `${
-            path.parse(file.filename).name
-        }_${Date.now()}.${fileType.split("/")[1]}`;
+        try{
+            file.filename = `${
+                path.parse(file.filename).name
+            }_${Date.now()}.${file.filename.split(".")[1]}`;
 
-        await file.createReadStream().pipe(
-             fs.createWriteStream(`D:/NEST_JS/nest_luyentap/src/infrastructure/images/${file.filename}`)
-        )
+            await file.createReadStream().pipe(
+                fs.createWriteStream(`D:/NEST_JS/nest_luyentap/src/infrastructure/images/${file.filename}`)
+            )
+            console.log("done")
+        }catch (e) {
+            console.log(e.message)
+        }
+
 
 
     }

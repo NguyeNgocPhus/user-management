@@ -33,9 +33,9 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     imports: [
 
         //{"query":"mutation AddProfile($picture:[Upload!]!){\n  addProfilePicture(picture1:$picture,params:{\n    productId:\"123123\"\n  })\n}"}
-        // ServeStaticModule.forRoot({
-        //     rootPath: join(__dirname,'infrastructure','images'),   // <-- path to the static files
-        // }),
+        //         // ServeStaticModule.forRoot({
+        //         //     rootPath: join(__dirname,'infrastructure','images'),   // <-- path to the static files
+        //         // }),
         PasswordModule,
         AutomapperModule.forRoot({
             options: [{name: "APP_MAPPER", pluginInitializer: classes}],

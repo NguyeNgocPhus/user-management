@@ -14,7 +14,19 @@ export class ProductRepository extends Repository<ProductRealModel> {
     }
 
     async getProductByIdAsync(id:string){
-        return await this.findOne({id});
+        return await  this.query(`
+            select *
+            from product_real_model
+            where id = $1
+            
+        `,[id]);
+    }
+    async getAllProductAsync(){
+        return await  this.query(`
+            select *
+            from product_real_model
+            
+        `);
     }
 
 }

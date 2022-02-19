@@ -1,4 +1,4 @@
-import { ProductRepository } from './product.repository';
+import { ProductRepository } from './product.repo';
 import { UserRepository } from './user.repository';
 import {RoleRepository} from "./role.repository";
 import {TypeRepository} from "./type.repository";

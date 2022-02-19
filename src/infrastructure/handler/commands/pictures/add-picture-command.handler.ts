@@ -9,7 +9,7 @@ import {DataTimeHelper, fileUploadHelper} from "../../../common/helper";
 import * as fs from "fs";
 import {rejects} from "assert";
 import {PictureRepository} from "../../../repositories/picture.repository";
-import {ProductRepository} from "../../../repositories/product.repository";
+import {ProductRepository} from "../../../repositories/product.repo";
 import {GetProductByIdQuery} from "../../../../core/application/queries/product/get-product-by-id.query";
 import {NotFoundException} from "@nestjs/common";
 import {ProductRealModel} from "../../../../core/domain/entities/product.entity";

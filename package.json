@@ -46,6 +46,7 @@
     "graphql": "^15.8.0",
     "graphql-upload": "^13.0.0",
     "moment": "^2.29.1",
+    "nest-winston": "^1.6.2",
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
@@ -55,7 +56,8 @@
     "rxjs": "^7.2.0",
     "ts-morph": "^13.0.2",
     "typeorm": "^0.2.41",
-    "win-node-env": "^0.6.0"
+    "win-node-env": "^0.6.0",
+    "winston": "^3.6.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",

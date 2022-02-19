@@ -10,6 +10,11 @@ export class UuidHelper {
 }
 export class DataTimeHelper {
     static getNowUnix= () =>moment().unix();
+    static rotation = () => {
+        const now = Date.now();
+        const dateObj = new Date(now);
+        return `.${dateObj.getFullYear()}_${dateObj.getMonth() + 1}_${dateObj.getDate()}_${dateObj.getHours()}_${dateObj.getMinutes()}_${dateObj.getSeconds()}_${dateObj.getMilliseconds()}`;
+    };
 }
 export class fileUploadHelper {
     static async upLoadFile(file:FileUpload){

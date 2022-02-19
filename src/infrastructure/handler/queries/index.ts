@@ -2,11 +2,13 @@ import {GetUserByPhoneNumberOrEmailQueryHandler} from "./user/get-user-by-phoneN
 import {GetRoleByCodeOrNameQueryHandler} from "./roles/get-role-by-code-or-name.query";
 import {GetUserByPhoneNumberQueryHandler} from "./user/get-user-by-phoneNumber.query.handler";
 import {GetProductByIdQueryHandler} from "./product/get-product-by-id.query.handler";
+import { GetAllQueryHandler } from "./product/get-all-query.handler";
 
 
 export const QueryHandler = [
     GetUserByPhoneNumberOrEmailQueryHandler,
     GetRoleByCodeOrNameQueryHandler,
     GetUserByPhoneNumberQueryHandler,
-    GetProductByIdQueryHandler
+    GetProductByIdQueryHandler,
+    GetAllQueryHandler
 ];

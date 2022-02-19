@@ -27,6 +27,10 @@ import {EventStoreModule} from "./infrastructure/common/services/event-store/eve
 import {UntilModule} from "./infrastructure/common/services/until/until.module";
 import {IsValidTypeConstraint} from "./core/application/common/validator/type-validator";
 import { ServeStaticModule } from '@nestjs/serve-static';
+import {ProductRepository} from "./infrastructure/repositories/product.repo";
+import {LoggerModule} from "./infrastructure/common/services/logger/logger.module";
+import {TypeOrmLoggerService} from "./infrastructure/common/services/logger/typeorm-logger.service";
+import {ILoggerService} from "./core/application/common/service/logger.interface";
 
 
 @Module({
@@ -46,9 +50,9 @@ import { ServeStaticModule } from '@nestjs/serve-static';
         AuthenticationModule,
         ConfigServiceModule,
         TypeOrmModule.forRootAsync({
-            imports: [ConfigServiceModule],
-            inject: [IConfigService],
-            useFactory: async (configService: IConfigService) => ({
+            imports: [ConfigServiceModule,LoggerModule],
+            inject: [IConfigService,ILoggerService],
+            useFactory: async (configService: IConfigService,loggerService:ILoggerService) => ({
                 type: 'postgres',
                 host: configService.get('DB_HOST'),
                 port: Number(configService.get('DB_PORT')),
@@ -62,15 +66,17 @@ import { ServeStaticModule } from '@nestjs/serve-static';
                 },
                 autoLoadEntities: true,
                 migrationsTableName: 'phu-migration',
-                logging: "all"
+                logging: "all",
+                logger:new TypeOrmLoggerService(loggerService)
             }),
         }),
         GraphQLModule.forRoot({
             autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
         }),
+        LoggerModule,
         PassportModule.register({defaultStrategy: 'local'}),
         TypeOrmModule.forFeature([...Repository]),
-        //TypeOrmModule.forFeature([UserReadModel,ProductRealModel,RoleReadModel]),
+        TypeOrmModule.forFeature([UserReadModel,ProductRealModel,RoleReadModel,ProductRealModel]),
         CqrsModule,
         JwtModule.registerAsync({
             imports: [ConfigServiceModule],

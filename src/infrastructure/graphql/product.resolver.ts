@@ -6,15 +6,22 @@ import {UseGuards} from '@nestjs/common';
 import {InjectMapper} from "@automapper/nestjs";
 import {Mapper} from "@automapper/core";
 import {CreateProductCommand} from "../../core/application/commands/product/create-product.command";
-import {CommandBus} from "@nestjs/cqrs";
+import {CommandBus, QueryBus} from "@nestjs/cqrs";
 import {JwtAuthGuard} from "../common/authentication/guards/jwt-auth.guard";
 import {PermissionGuards} from "../common/authorization/guards/permission.guards";
 import {Permissions} from "../common/authorization/decorator/permission.decorator";
 import {PermConst} from "../../core/application/common/constants/perm.constants";
+import {GetProductByIdQuery} from "../../core/application/queries/product/get-product-by-id.query";
+import {GetAllProductQuery} from "../../core/application/queries/product/get-all-product.query";
+import {ILoggerService} from "../../core/application/common/service/logger.interface";
 
 @Resolver()
 export class ProductResolver {
-    constructor(@InjectMapper() private mapper: Mapper, private commandBus: CommandBus) {
+    constructor(@InjectMapper() private mapper: Mapper,
+                private commandBus: CommandBus ,
+                private queryBus : QueryBus,
+                private logger : ILoggerService
+                ) {
     }
 
     @Query((returns) => String)
@@ -35,6 +42,22 @@ export class ProductResolver {
 
         return result;
     }
+
+    @Query(()=> [ProductDto])
+    async getProductAsync(){
+        const query = new GetAllProductQuery();
+        const result  = await this.queryBus.execute(query);
+
+        await this.logger.info(this.getProductAsync.name,{...result} )
+        return result;
+    }
+    @Query(()=> ProductDto)
+    async getProductByIdAsync(@Args('id') id :string){
+        const query = new GetProductByIdQuery(id);
+        const result  = await this.queryBus.execute(query);
+        return result;
+    }
+
 
 
 }

@@ -10,7 +10,7 @@ import {Mapper} from "@automapper/core";
 import { TypeDto } from "src/core/domain/dtos/type/type.dto";
 import {CreateProductCommand} from "../../../../core/application/commands/product/create-product.command";
 import {ProductRealModel} from "../../../../core/domain/entities/product.entity";
-import {ProductRepository} from "../../../repositories/product.repository";
+import {ProductRepository} from "../../../repositories/product.repo";
 import {ProductStatus} from "../../../../core/domain/common/enum/product.status";
 import {ProductDto} from "../../../../core/domain/dtos/product/product.dto";
 

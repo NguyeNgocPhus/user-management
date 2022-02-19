@@ -140,6 +140,8 @@ type TypeDto {
 
 type Query {
   GetListProduct: String!
+  getProductAsync: [ProductDto!]!
+  getProductByIdAsync(id: String!): ProductDto!
   createToken: String!
 }
 
